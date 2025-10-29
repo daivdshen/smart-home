@@ -1,5 +1,6 @@
 package com.intelliving.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
@@ -31,11 +34,12 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import io.dcloud.PandoraEntry;
 
-public class HomeActivity extends PandoraEntry implements CGCallbackInt, LifecycleObserver {
+public class HomeActivity extends PandoraEntry implements CGCallbackInt {
 
     private static final String TAG = "HomeActivity";
 
-    RemoteMessage pushMessage = null;
+    public static final boolean withUI = true;
+    public static final boolean softwareDecode = true;
 
     CGCallbackInt callback;
     CGCallStartReceiver callStartEventCallback;
@@ -47,26 +51,21 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt, Lifecyc
         super.onCreate(savedInstanceState);
         ComelitFirebaseMessagingService.updateStoredTokenIfNeeded(this);
         Intent intent = getIntent();
-        initAppLifecycleHandler();
 
         handleIntent(intent);
-        System.out.println("onCreate..................12231");
+        Log.i(TAG,"onCreate..................12231");
 
         //use this api to enable/disable the internal management of the ringtone (enabled by default starting from android 10)
-        cgModule= CGModule.getInstance(getApplicationContext());
+        cgModule = CGModule.getInstance(getApplicationContext());
         cgModule.setEnableRingtone(true);
 
-        connectToSystem(this,"perfect10.tplinkdns.com",64100,"57cdd7","","","");
-
+        connectToSystem(this,"perfect10.tplinkdns.com",64100,"xo21l3","","","");
     }
 
     public String connectToSystem(Context context, String hostname, int port, String activationCode, String userId, String unitId, String serverHost){
         if(hostname==null || "".equals(hostname)){
             return "Vcp is empty";
         }
-//        hostname="192.168.2.200";
-        activationCode="57cdd7";
-//        port=64300;
         Log.i("VcpInterface", "hostname ....................."+hostname+" "+activationCode+" "+userId+" "+unitId);
         try {
 
@@ -94,9 +93,6 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt, Lifecyc
         }
 
         try{
-            boolean withUI = true;
-            boolean softwareDecode = true;//sharedPreference.getBoolean(Utils.SOFTWARE_VIDEO_DECODE_KEY,true);
-
             String repeatKey="hello5";
             SharedPreferences sharedPreferences = context.getSharedPreferences("VCP_INFO", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -154,13 +150,6 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt, Lifecyc
         return "";
     }
 
-    /**
-     * lifecycle event init/clean
-     */
-    private void initAppLifecycleHandler(){
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(this);
-    }
-
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -171,58 +160,23 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt, Lifecyc
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        disconnectFromSystem();
-        cleanAppLifecycleHandler();
         Log.d(TAG,"onDestroy");
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        disconnectFromSystem();
         Log.d(TAG,"onBackPressed");
-    }
-
-    /**
-     * lifecycle event receiver
-     */
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    public void onMoveToBackground() {
-        Log.i(TAG," app moved to background");
-        disconnectFromSystem();
-        runOnUiThread(() -> finish());
     }
 
     /**
      * internal method to handle launch intent for this activity
      */
     private void handleIntent(Intent intent){
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            //if we are already connected it means that the user opened the app from the launcher
-            //we just need to get tell the sdk that the has been opened so it can start our call activity
-            if (CGModule.getInstance(getApplicationContext()).status() == VipSystemManager.VipSystemConnectionStatus.VIP_CONNECTED) {
-                SharedPreferences sharedPreference = getSharedPreferences(getString(R.string.preference_file_key), MODE_PRIVATE);
-                boolean withUI = sharedPreference.getBoolean(Utils.COMELIT_INTERNAL_CALL_UI_KEY,false);
-                boolean softwareDecode = sharedPreference.getBoolean(Utils.SOFTWARE_VIDEO_DECODE_KEY,true);
-                if (!withUI) {
-                    callStartEventCallback = new CallStartEventHandler(this, softwareDecode);
-                    CGModule.getInstance(getApplicationContext()).setCallStartReceiver(callStartEventCallback);
-                }
-                CGModule.getInstance(getApplicationContext()).notifyPendingCall();
-                onConnect();
-                return;
-            }
-        }
         SharedPreferences vcpInfo = getSharedPreferences("VCP_INFO", MODE_PRIVATE);
         if(!"".equals(vcpInfo.getString("host",""))){
             connectToSystem(vcpInfo.getString("host",""),vcpInfo.getInt("port",64100),vcpInfo.getString("actCode",""));
         }
-    }
-
-    private void cleanAppLifecycleHandler(){
-        ProcessLifecycleOwner.get().getLifecycle().removeObserver(this);
     }
 
     @Override
@@ -274,9 +228,6 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt, Lifecyc
 ////        acdotg
 //        String activationCode = "h6z5io";//sharedPreference.getString("activation_code", "");
         String token = ComelitFirebaseMessagingService.getToken(this);
-        boolean withUI = true;//sharedPreference.getBoolean(Utils.COMELIT_INTERNAL_CALL_UI_KEY,true);
-        boolean softwareDecode = true;//sharedPreference.getBoolean(Utils.SOFTWARE_VIDEO_DECODE_KEY,true);
-
         callback = this;
         callStartEventCallback = new CallStartEventHandler(this,softwareDecode);
 
@@ -298,35 +249,9 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt, Lifecyc
                 setAudioSettings(audioSettings).
                 build();
 
-
-        if (!withUI) {
-            Log.i(TAG,"using external UI, set call start receiver");
-            CGModule.getInstance(getApplicationContext()).setCallStartReceiver(callStartEventCallback);
-        }
-
-        if (pushMessage == null){
-            Log.i(TAG,"Connect to system");
-           CGResponse cgResponse= CGModule.getInstance(getApplicationContext()).connect(parameters);
-           Log.i(TAG,cgResponse.toString());
-        } else {
-
-            Log.i(TAG,"Connect to system for call");
-            if (withUI)
-                CGModule.getInstance(getApplicationContext()).handlePushNotification(pushMessage,callback,softwareDecode);
-            else
-                CGModule.getInstance(getApplicationContext()).handlePushNotificationWithoutUI(pushMessage,callback,softwareDecode);
-
-            pushMessage = null;
-        }
-        System.out.println("connect success....");
-    }
-
-    private void disconnectFromSystem(){
-        if(getResources().getBoolean(R.bool.disable_disconnect)) {
-            Log.d(TAG, "Disconnect is disabled");
-            return;
-        }
-        CGModule.getInstance(getApplicationContext()).disconnect();
+        Log.i(TAG,"Connect to system");
+        CGResponse cgResponse= CGModule.getInstance(getApplicationContext()).connect(parameters);
+        Log.i(TAG,cgResponse.toString());
     }
 
     private String getHomeTitle() {

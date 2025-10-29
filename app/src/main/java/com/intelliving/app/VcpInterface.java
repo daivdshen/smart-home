@@ -41,9 +41,6 @@ public class VcpInterface {
         if(hostname==null || "".equals(hostname)){
             return "Vcp is empty";
         }
-//        hostname="192.168.2.200";
-        activationCode="57cdd7";
-//        port=64300;
         Log.i("VcpInterface", "hostname ....................."+hostname+" "+activationCode+" "+userId+" "+unitId);
         try {
 
@@ -71,8 +68,6 @@ public class VcpInterface {
         }
 
         try{
-            boolean withUI = true;
-            boolean softwareDecode = true;//sharedPreference.getBoolean(Utils.SOFTWARE_VIDEO_DECODE_KEY,true);
 
             String repeatKey="hello5";
             SharedPreferences sharedPreferences = context.getSharedPreferences("VCP_INFO", Context.MODE_PRIVATE);
@@ -117,8 +112,8 @@ public class VcpInterface {
                         }
                     }).
                     setPushToken(token).
-                    useComelitUI(withUI).
-                    enableSoftwareDecode(softwareDecode).
+                    useComelitUI(HomeActivity.withUI).
+                    enableSoftwareDecode(HomeActivity.softwareDecode).
                     setAudioSettings(audioSettings).
                     build();
 

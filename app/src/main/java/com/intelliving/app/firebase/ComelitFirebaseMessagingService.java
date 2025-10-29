@@ -17,10 +17,6 @@ import com.comelitgroup.module.api.CGModule;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
-import static com.intelliving.app.ExternalUICallActivity.EXTRA_SOFTWARE_DECODE;
-
 /**
  * Created by simone.mutti on 13/09/17.
  *
@@ -34,17 +30,12 @@ import static com.intelliving.app.ExternalUICallActivity.EXTRA_SOFTWARE_DECODE;
 public class ComelitFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TOKEN_KEY = "token";
-    private static final String TAG = "VcpInterface";
+    private static final String TAG = " ComelitFCMService";
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.i(TAG, "received....");
+        Log.i(TAG, "received.... " + remoteMessage.getData());
         try {
-            SharedPreferences sharedpreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-            boolean comelitInternalUI = true;////sharedpreferences.getBoolean(Utils.COMELIT_INTERNAL_CALL_UI_KEY, false);
-            boolean softwareDecode = true;//sharedpreferences.getBoolean(Utils.SOFTWARE_VIDEO_DECODE_KEY, false);
-
-
             //use this api to customize the call notification
             CGModule.getInstance(getApplicationContext()).setCallNotificationStyle(R.drawable.example_ext_unit_icon_comelit, R.string.app_name, R.color.red);
 
@@ -52,55 +43,24 @@ public class ComelitFirebaseMessagingService extends FirebaseMessagingService {
             CGModule.getInstance(getApplicationContext()).setEnableRingtone(true);
 
             if (remoteMessage.getData().size() > 0) {
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if (comelitInternalUI) {
-                        CGModule.getInstance(getApplicationContext()).handlePushNotification(remoteMessage, new CGCallbackInt() {
-                            @Override
-                            public void onConnect() {
-                                Log.i(TAG, "connection from push completed");
-                            }
-
-                            @Override
-                            public void onDisconnect() {
-                                Log.i(TAG, "connection from push, disconnected");
-                            }
-
-                            @Override
-                            public void onError(CGError error) {
-                                //just disconnect in case of error
-                                Log.i(TAG, "connection from push CGError:"+error);
-                                CGModule.getInstance(getApplicationContext()).disconnect();
-                            }
-                        }, softwareDecode);
-                    } else {
-                        Intent intent = new Intent(getApplicationContext(), ExternalUICallActivity.class);
-                        intent.putExtra(EXTRA_SOFTWARE_DECODE, softwareDecode);
-                        CGModule.getInstance(getApplicationContext()).setExternalPendingCallIntent(intent);
-                        CGModule.getInstance(getApplicationContext()).handlePushNotificationWithoutUI(remoteMessage, new CGCallbackInt() {
-                            @Override
-                            public void onConnect() {
-                                Log.i(TAG, "connection from push completed111");
-                            }
-
-                            @Override
-                            public void onDisconnect() {
-                                Log.i(TAG, "connection from push, disconnected222");
-                            }
-
-                            @Override
-                            public void onError(CGError error) {
-                                //just disconnect in case of error
-                                CGModule.getInstance(getApplicationContext()).disconnect();
-                            }
-                        }, softwareDecode);
+                CGModule.getInstance(getApplicationContext()).handlePushNotification(remoteMessage, new CGCallbackInt() {
+                    @Override
+                    public void onConnect() {
+                        Log.i(TAG, "connection from push completed");
                     }
-                } else {
-                    Intent intent = new Intent(this, HomeActivity.class);
-                    intent.putExtra("message", remoteMessage);
-                    intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                }
+
+                    @Override
+                    public void onDisconnect() {
+                        Log.i(TAG, "connection from push, disconnected");
+                    }
+
+                    @Override
+                    public void onError(CGError error) {
+                        //just disconnect in case of error
+                        Log.i(TAG, "connection from push CGError:"+error);
+                        CGModule.getInstance(getApplicationContext()).disconnect();
+                    }
+                }, HomeActivity.softwareDecode);
             }
         }catch (Exception e){
             e.printStackTrace();
