@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash"
+    >
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/home_toolbar"
+        android:minHeight="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleTextColor="@android:color/white"
+        android:background="@color/greenComelit">
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:selectedBackgroundVisible="false"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        android:elevation="8dp">
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/multiple_actions_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            fab:fab_addButtonColorNormal="@color/white"
+            fab:fab_addButtonColorPressed="@color/white_pressed"
+            fab:fab_addButtonSize="normal"
+            fab:fab_addButtonPlusIconColor="@color/half_black"
+            fab:fab_expandDirection="down"
+            fab:fab_labelStyle="@style/menu_labels_style"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/externalUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_colorPressed="@color/white_pressed"
+                fab:fab_title="External Unit"
+                android:src="@drawable/external_unit"
+                android:background="@color/material_grey_300"
+                android:onClick="showExternalUnit"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/internalUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_colorPressed="@color/white_pressed"
+                fab:fab_title="Internal Unit"
+                android:src="@drawable/external_unit"
+                android:background="@color/material_grey_300"
+                android:onClick="showInternalUnit"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/portier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_title="Portier"
+                fab:fab_colorPressed="@color/white_pressed"
+                android:src="@drawable/external_unit"
+                android:background="@color/material_grey_300"
+                android:onClick="showPortier"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/cameraUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_title="Camera"
+                fab:fab_colorPressed="@color/white_pressed"
+                android:src="@drawable/external_unit"
+                android:background="@color/material_grey_300"
+                android:onClick="showCameraUnit"/>
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+

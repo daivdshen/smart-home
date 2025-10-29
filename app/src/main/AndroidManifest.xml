@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.CAMERA" tools:node="remove"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+
+    <application
+        android:name="com.intelliving.app.ExampleApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        tools:replace="android:name"
+        android:extractNativeLibs="true"
+        >
+<!--        <activity android:name=".HomeActivity"-->
+<!--            android:exported="true"-->
+<!--            android:launchMode="singleTask">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <action android:name="android.intent.action.VIEW"/>-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
+<!--        <activity android:name=".SettingsActivity" />-->
+<!--        <activity android:name=".AudioSettings" />-->
+
+        <service android:name="com.intelliving.app.firebase.ComelitFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity android:name="com.intelliving.app.ExternalUICallActivity"/>
+
+<!--        <receiver android:name=".BootReceiver"-->
+<!--            android:label="BootReceiver"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.BOOT_COMPLETED"></action>-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+        <activity
+            android:name="com.intelliving.app.HomeActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|navigation"
+            android:exported="true"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="user"
+            android:theme="@style/TranslucentTheme"
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTask"
+            android:extractNativeLibs="true"
+            tools:ignore="DiscouragedApi,MissingClass">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme=" " />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="io.dcloud.PandoraEntryActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize|mcc|mnc|fontScale|keyboard|smallestScreenSize|screenLayout|screenSize|uiMode"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTask"
+            android:permission="com.miui.securitycenter.permission.AppPermissionsEditor"
+            android:screenOrientation="user"
+            android:theme="@style/DCloudTheme"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="MissingClass"></activity>
+
+<!--        google appkey-->
+        <meta-data
+            android:name="dcloud_appkey"
+            android:value="6743e34822481e6a6140185f2011e468" />
+
+        <!--test appkey -->
+<!--                <meta-data-->
+<!--                    android:name="dcloud_appkey"-->
+<!--                    android:value="af432833e48fb42c554d3c69bd2f0084" />-->
+        <meta-data
+            android:name="com.google.android.gms.clearcut_client#com.intelliving.perfectten"
+            android:value="FILE" />
+
+    </application>
+
+</manifest>

@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name" translatable="false">Perfect Ten Intelliving</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_doorentry">Door Entry</string>
+    <string name="menu_message">Messages</string>
+    <string name="menu_camera">Camera</string>
+    <string name="menu_opendoor">Opendoor</string>
+    <string name="menu_actuator">Actuator</string>
+    <string name="menu_settings">Settings</string>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="preference_file_key" translatable="false">settings_preferences</string>
+
+</resources>

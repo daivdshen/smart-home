@@ -1,0 +1,60 @@
+{
+  "project_info": {
+    "project_number": "472802087005",
+    "project_id": "comintelivingsmart",
+    "storage_bucket": "comintelivingsmart.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472802087005:android:75bd969b36910582e57db4",
+        "android_client_info": {
+          "package_name": "com.intelliving.perfectten"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8I8jodFwLegCnxuB1oic71eFrzRJn3HE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675264238659:android:3754882f76aa7f90",
+        "android_client_info": {
+          "package_name": "com.comelitgroup.module"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675264238659-drshn3mofeb9laldn9vf73uh5lpdseal.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCs4xr6NJnK5Ufc0f1EUwaU8NWRiiy7sAI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

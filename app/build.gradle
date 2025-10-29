@@ -1,0 +1,132 @@
+apply plugin: 'com.android.application'
+
+android {
+    namespace 'com.intelliving.app'
+    compileSdkVersion 35
+    defaultConfig {
+        //生产环境测试环境修改三个地方，AndroidManifest.xml，applicationId，google-services.json
+        applicationId "com.intelliving.perfectten" //prod
+//        applicationId "com.inteliving.smart"  //test
+        minSdkVersion 29
+        targetSdkVersion 35
+        versionCode 387
+        versionName "3.8.7"
+//        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        ndk {
+//            abiFilters 'x86', 'armeabi-v7a', 'arm64-v8a'
+            abiFilters 'armeabi-v7a', 'arm64-v8a'
+        }
+    }
+
+    lintOptions{
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    signingConfigs {
+        debug {
+            v1SigningEnabled true
+            v2SigningEnabled true
+            storeFile file("smart.keystore")
+            storePassword 'kJ17813'
+            keyAlias 'smartalias'
+            keyPassword 'kJ17813'
+        }
+        release {
+            v1SigningEnabled true
+            v2SigningEnabled true
+            storeFile file("smart.keystore")
+            storePassword 'kJ17813'
+            keyAlias 'smartalias'
+            keyPassword 'kJ17813'
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.release
+            //            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    aaptOptions {
+        additionalParameters '--auto-add-overlay'
+        ignoreAssetsPattern "!.svn:!.git:.*:!CVS:!thumbs.db:!picasa.ini:!*.scc:*~"
+    }
+    packagingOptions {
+//        exclude 'META-INF/proguard/androidx-annotations.pro'
+//        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+//        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+//        pickFirst 'lib/x86/libc++_shared.so'
+//        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+//        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+//        pickFirst 'lib/x86_64/libc++_shared.so'
+//
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
+}
+
+dependencies {
+
+    implementation fileTree(dir: 'libs', include: ['*.aar', '*.jar'], exclude: [])
+    implementation 'androidx.core:core:1.13.0'
+    implementation "androidx.fragment:fragment:1.1.0"
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.facebook.fresco:fresco:2.5.0'
+    implementation "com.facebook.fresco:animated-gif:2.5.0"
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    api 'com.alibaba:fastjson:1.2.83'
+//    api 'com.alibaba:fastjson:2.0.18.android'
+    implementation 'androidx.webkit:webkit:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+
+    //******** Comelit SDK dependencies **********
+    implementation(group: 'com.comelitgroup.module', name: 'module', version: '0.9.35', ext: 'aar')
+    implementation(group: 'com.comelitgroup.multimedia', name: 'multimedia', version: '0.3.2')
+    implementation(group: 'com.comelitgroup.vipcomelit', name: 'vipcomelit', version: '0.5.25')
+    implementation 'com.getkeepsafe.relinker:relinker:1.4.4'
+    //********************************************
+
+    implementation 'com.google.firebase:firebase-messaging:23.1.2'
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.aurelhubert:ahbottomnavigation:2.2.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.getbase:floatingactionbutton:1.10.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'org.greenrobot:eventbus:3.2.0'
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+
+    testImplementation 'junit:junit:4.13.2'
+
+    annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.4.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
+}
+
+apply plugin: 'com.google.gms.google-services'
