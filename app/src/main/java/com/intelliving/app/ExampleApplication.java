@@ -27,6 +27,8 @@ public class ExampleApplication extends DCloudApplication implements DefaultLife
     public void onStart(@NonNull LifecycleOwner owner) {
         // App entered foreground (at least one activity is in a started state)
         Log.d(TAG, "App entered foreground");
+        CGModule.getInstance(getApplicationContext()).setEnableRingtone(true);
+
     }
 
     @Override

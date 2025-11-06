@@ -78,7 +78,7 @@ public class ComelitFirebaseMessagingService extends FirebaseMessagingService {
         try {
             return context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
                     .getString(TOKEN_KEY, "");
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return "";

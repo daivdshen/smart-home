@@ -29,10 +29,12 @@ public class CallStartEventHandler implements CGCallStartReceiver {
     @Override
     public void onCallStart(String caller, CallDirection callDirection, LinkedList<CallFlag> linkedList, boolean isFloorCall) {
         Log.i(TAG,"onCallStart");
-        Intent intent = new Intent(context,ExternalUICallActivity.class);
-        intent.putExtra(EXTRA_SOFTWARE_DECODE,softwareDecode);
-        intent.putExtra(EXTRA_CALL_CALLER_NAME,caller);
-        intent.putExtra(EXTRA_CALL_DIRECTION,callDirection);
-        context.startActivity(intent);
+//        Intent intent = new Intent(context,ExternalUICallActivity.class);
+//        intent.putExtra(EXTRA_SOFTWARE_DECODE,softwareDecode);
+//        intent.putExtra(EXTRA_CALL_CALLER_NAME,caller);
+//        intent.putExtra(EXTRA_CALL_DIRECTION,callDirection);
+//        context.startActivity(intent);
+
+
     }
 }

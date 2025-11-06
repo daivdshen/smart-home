@@ -55,9 +55,9 @@ public class NotificationPermissionHelper {
      */
     private static void showPermissionRationaleDialog(Activity activity) {
         new AlertDialog.Builder(activity)
-                .setTitle("需要通知权限")
+                .setTitle("Notification permission required")
                 .setMessage("In order to promptly push you important messages and reminders, please allow us to send notifications")
-                .setPositiveButton("Sure", (dialog, which) -> {
+                .setPositiveButton("Agree", (dialog, which) -> {
                     // 用户确认后再次请求权限
                     ActivityCompat.requestPermissions(
                             activity,
@@ -65,7 +65,7 @@ public class NotificationPermissionHelper {
                             NOTIFICATION_PERMISSION_REQUEST_CODE
                     );
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton("Refuse", null)
                 .show();
     }
 
@@ -97,4 +97,8 @@ public class NotificationPermissionHelper {
         void onGranted();
         void onDenied();
     }
+
+
+
+
 }

@@ -1,16 +1,24 @@
 package com.intelliving.app;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -21,6 +29,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.firebase.BuildConfig;
 import com.intelliving.app.R;
 import com.intelliving.app.firebase.ComelitFirebaseMessagingService;
+import com.intelliving.app.utils.NotificationPermissionHelper;
+import com.intelliving.app.utils.PermissionUtils;
 import com.intelliving.app.utils.Utils;
 import com.comelitgroup.module.api.CGAudioSettings;
 import com.comelitgroup.module.api.CGCallStartReceiver;
@@ -45,7 +55,7 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt {
     CGCallStartReceiver callStartEventCallback;
 
     CGModule cgModule;
-
+    private static final int REQUEST_CODE_FULL_SCREEN_INTENT = 1001;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +69,109 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt {
         cgModule = CGModule.getInstance(getApplicationContext());
         cgModule.setEnableRingtone(true);
 
-        connectToSystem(this,"perfect10.tplinkdns.com",64100,"xo21l3","","","");
+//        CGModule.getInstance(getApplicationContext()).setCallStartReceiver(callStartEventCallback);
+
+        connectToSystem(this,"perfect10.tplinkdns.com",64100,"8i1vg2","","","");
+
+        // 检查并请求通知权限
+        if (!NotificationPermissionHelper.hasNotificationPermission(this)) {
+            NotificationPermissionHelper.requestNotificationPermission(this);
+        }
+
+        checkAndRequestFullScreenIntentPermission();
+    }
+
+    @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    private static boolean isAppEligibleForFullScreenIntent(Context context) {
+        try {
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+            // 检查应用是否在允许列表中
+            return notificationManager.canUseFullScreenIntent();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private void checkAndRequestFullScreenIntentPermission() {
+        if (!PermissionUtils.hasFullScreenIntentPermission(this)) {
+            requestFullScreenIntentPermission();
+        } else {
+            // 已经有权限，执行相关操作
+            Log.i(TAG,"has checkAndRequestFullScreenIntentPermission ");
+        }
+
+        // 2. Android 16+ 特殊检查
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            boolean isOk=isAppEligibleForFullScreenIntent(getApplicationContext());
+
+        }
+    }
+
+    private void requestFullScreenIntentPermission() {
+        // 检查是否需要显示权限说明
+        if (shouldShowRequestPermissionRationale(android.Manifest.permission.USE_FULL_SCREEN_INTENT)) {
+            showPermissionRationaleDialog();
+        } else {
+            // 直接请求权限
+            requestPermissionDirectly();
+        }
+    }
+
+    private void requestPermissionDirectly() {
+        requestPermissions(
+                new String[]{android.Manifest.permission.USE_FULL_SCREEN_INTENT},
+                REQUEST_CODE_FULL_SCREEN_INTENT
+        );
+    }
+    private void showPermissionRationaleDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Full screen intent permission is required")
+                .setMessage("This permission allows the application to display important notifications (such as call reminders) on the lock screen and in full screen mode, providing a better user experience")
+                .setPositiveButton("Agree", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermissionDirectly();
+                    }
+                })
+                .setNegativeButton("Refuse", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(HomeActivity.this, "Permission denied, some functions may not be available", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setCancelable(false)
+                .show();
+    }
+
+    // 处理权限请求结果
+    @Override
+    public void onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        NotificationPermissionHelper.handlePermissionResult(
+                requestCode,
+                grantResults,
+                new NotificationPermissionHelper.OnPermissionResultListener() {
+                    @Override
+                    public void onGranted() {
+                        // 权限被授予，执行相应操作
+                        Toast.makeText(HomeActivity.this, "Notification permission has been enabled", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        // 权限被拒绝，提示用户
+                        Toast.makeText(HomeActivity.this, "Notification permission has been disabled, which may affect some functions", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
     }
 
     public String connectToSystem(Context context, String hostname, int port, String activationCode, String userId, String unitId, String serverHost){
@@ -106,6 +218,7 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt {
                         @Override
                         public void onConnect() {
                             Log.i("VcpInterface","connect success!");
+                            CGModule.getInstance(getApplicationContext()).setEnableRingtone(true);
                         }
 
                         @Override
@@ -140,7 +253,7 @@ public class HomeActivity extends PandoraEntry implements CGCallbackInt {
                     enableSoftwareDecode(softwareDecode).
                     setAudioSettings(audioSettings).
                     build();
-
+            CGModule.getInstance(context).setEnableRingtone(true);
             CGResponse cgResponse= CGModule.getInstance(context).connect(parameters);
         }catch (Exception e){
             e.printStackTrace();

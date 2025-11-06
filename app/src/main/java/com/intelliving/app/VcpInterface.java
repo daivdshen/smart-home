@@ -82,6 +82,7 @@ public class VcpInterface {
                         @Override
                         public void onConnect() {
                             Log.i("VcpInterface","connect success!");
+                            CGModule.getInstance(context).setEnableRingtone(true);
                         }
 
                         @Override
@@ -117,8 +118,9 @@ public class VcpInterface {
                     setAudioSettings(audioSettings).
                     build();
 
-               CGResponse cgResponse= CGModule.getInstance(context).connect(parameters);
-            }catch (Exception e){
+            CGModule.getInstance(context).setEnableRingtone(true);
+            CGResponse cgResponse= CGModule.getInstance(context).connect(parameters);
+        }catch (Exception e){
             e.printStackTrace();
             return "Connect error";
         }
